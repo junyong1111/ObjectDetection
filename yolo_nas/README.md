@@ -1,4 +1,6 @@
-## YOLO-NAS 신경구조
+## YOLO-NAS
+
+---
 
 먼저 신경 구조 검색에 대해 살펴보겠습니다. **NAS(Nural Archtecture Search)**
 
@@ -22,4 +24,51 @@ YOLO NAS는 Neural Architecture Search (NAS) 기술을 사용하여 개발된 �
 
  YOLO NAS의 다른 주요 특징은 다음과 같다. 첫째로, YOLO NAS 아키텍처에는 양자화를 지원하는 블록과 최적화된 성능을 위한 선택적 양자화가 포함되어 있다. 둘째로, NAS 사전 훈련 모델은 Coco 데이터셋, Object365 데이터셋, Roboflow Hundred 데이터셋으로 사전 훈련되어 있으며, Roboflow Hundred 데이터셋에서 기존 YOLO 모델들보다 우수한 성능을 보인다. 마지막으로, 훈련 후 양자화 과정을 거쳐 YOLO NAS 모델을 Int8 양자화된 버전으로 변환하여 다른 YOLO 모델보다 더 효율적이다.
 
-비디오에서는 YOLO NAS 모델의 특징과 성능에 대한 설명을 들을 수 있다. 이 모델은 작은 객체를 검출하는 능력과 속도, 정확도 측면에서 기존 YOLO 모델들보다 우수한 성능을 보인다. 또한 이미지와 비디오에서 사람, 자동차, 트럭, 핸드백, 테니스 라켓 등을 정확하게 검출할 수 있음을 시연하고 있다.
+## 프로젝트 시작
+
+---
+
+## 1. 필요 라이브러리 다운로드
+
+```bash
+#-- requirements.txt
+super-gradients==3.1.2
+opencv-python
+```
+
+```bash
+pip install -r requirements.txt
+```
+
+## 2. 코드 작성
+
+```python
+import cv2
+import torch
+from super_gradients.training import models
+
+#-- GPU 설정
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(device)
+use_cuda = torch.cuda.is_available()
+print(use_cuda)
+if use_cuda:
+  print(torch.cuda.get_device_name(0))
+
+#-- 이미지 불러오기
+img = cv2.imread("이미지경로")
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+#-- 사전학습된 Yolo_nas_small 모델 불러오기(빠르지만 정확도가 낮음)
+model_s = models.get("yolo_nas_s", pretrained_weights ="coco").to(device)
+model_m = models.get("yolo_nas_m", pretrained_weights ="coco").to(device)
+model_l = models.get("yolo_nas_l", pretrained_weights ="coco").to(device)
+
+out_s = model_s.predict(img, conf = 0.3)
+out_m = model_m.predict(img, conf = 0.3)
+out_l = model_l.predict(img, conf = 0.3)
+
+out_s.show()
+out_m.show()
+out_l.show()
+```

@@ -15,78 +15,76 @@
     
     [Roboflow Universe: Open Source Computer Vision Community](https://universe.roboflow.com/)
     
-    <img width="1676" alt="1" src="https://github.com/junyong1111/objectdetection/assets/79856225/48464af7-cf7d-4091-9e10-3fcb85e4ebf3">
-
-    
+    <img width="1676" alt="1" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/59275ae7-6cc0-485f-be1c-2bd21075f746">
 
 ### Step1. 데이터 라벨링
 
-<img width="1594" alt="2" src="https://github.com/junyong1111/objectdetection/assets/79856225/47f2df49-e787-4e01-bbc3-17c826cd623a">
+<img width="1594" alt="2" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/216591fb-8f0c-4d89-bd8f-2e094f5b9ad4">
 
-<img width="683" alt="3" src="https://github.com/junyong1111/objectdetection/assets/79856225/542a4cf1-ff1a-4464-9852-b7b8cb7c4f2b">
+<img width="683" alt="3" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/8bac1f92-84e7-474c-8ed7-c964bf6e0de7">
 
-<img width="673" alt="4" src="https://github.com/junyong1111/objectdetection/assets/79856225/af1d00df-a78c-432f-8ceb-a9ed27d3ad4f">
+<img width="673" alt="4" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/3ea791cd-5ea9-4776-9cf0-0baf52c49a6d">
 
-<img width="671" alt="5" src="https://github.com/junyong1111/objectdetection/assets/79856225/73169c00-33b4-4db2-906f-bd4fd6a57c6e">
+<img width="671" alt="5" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/7e81f4c0-064e-444f-a866-0a313bf8cf25">
 
-<img width="1333" alt="6" src="https://github.com/junyong1111/objectdetection/assets/79856225/22adc5af-7ee1-487c-9c90-32ea4da1b340">
+<img width="1333" alt="6" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/3f468601-d055-4655-b12d-75f1bc8fbd48">
 
-<img width="555" alt="7" src="https://github.com/junyong1111/objectdetection/assets/79856225/9af634c8-696e-4ba3-9c4a-fa6c0b385576">
+<img width="555" alt="7" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/e05baa5f-f732-4bb2-874e-7584c2cea4ac">
 
-<img width="1060" alt="8" src="https://github.com/junyong1111/objectdetection/assets/79856225/bdedaf17-25bc-48fd-93f1-c1abc5f8526a">
+<img width="1060" alt="8" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/b84fba29-af6d-4ee0-b489-381d6cd9ac64">
 
+<img width="1081" alt="9" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/2850f9a3-3875-4149-b0aa-f8cbaff44160">
 
-<img width="1081" alt="9" src="https://github.com/junyong1111/objectdetection/assets/79856225/eea73226-dfa4-46b8-b59b-51ae3ecf36fb">
-
-
-<img width="1394" alt="10" src="https://github.com/junyong1111/objectdetection/assets/79856225/74123734-7d12-4f48-8e2e-94ea379758a9">
+<img width="1394" alt="10" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/837b2044-056f-4666-a626-c8e01cb6b63c">
 
 **~~이미지 하나씩 라벨링 시작 smart 기능을 이용하면 더욱 정교하게 라벨링 가능(신세계 경험)~~**
 
 <aside>
-❗ **객체 탐지에서는 정교한 라벨링을 하면 인식을 못함 ㅠㅠ 사각형으로 다시 라벨링!!
-Segmentation에서 했어야 하는듯…. 이 문제 때문에 몇 시간을 날림..**
+❗ 객체 탐지에서는 정교한 라벨링을 하면 인식을 못함 ㅠㅠ 사각형으로 다시 라벨링!!
+Segmentation에서 했어야 하는듯…. 이 문제 때문에 몇 시간을 날림..
 
 </aside>
 
 - ~~만약 라벨링을 실수한경우 손바닥 모양을 클릭하면 쉽게 수정 가능!!~~
 
-<img width="1622" alt="11" src="https://github.com/junyong1111/objectdetection/assets/79856225/829ac7f2-4457-49ac-bc66-28bd100d5fc5">
+<img width="1622" alt="11" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/c8085ef1-03dc-45e7-9c2c-9657c231c7a3">
 
-<img width="1345" alt="12" src="https://github.com/junyong1111/objectdetection/assets/79856225/c29bb269-ec7e-4c7e-8117-5dfdb5928b23">
+
+<img width="1345" alt="12" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/86347c28-7296-4d54-94c9-da4b15a4be7b">
 
 **위처럼 하면 안됨 아래처럼 !! 사각형(바운딩 박스)으로 라벨링 해야함**
 
-<img width="753" alt="13" src="https://github.com/junyong1111/objectdetection/assets/79856225/5c714853-54a9-4327-b7ed-231f3daa5e0f">
+<img width="753" alt="13" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/2de95509-8348-4db5-8051-cff5f3663198">
+
 
 **라벨링이 모두 끝나면 add 버튼 클릭**
 
-<img width="1112" alt="14" src="https://github.com/junyong1111/objectdetection/assets/79856225/8449aee9-f841-4c04-9ab5-36d6350bf16b">
+<img width="1112" alt="14" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/326e4970-9b2b-40c9-abd6-7d370eba8275">
+
 
 **원하는 비율로 데이터셋을 나누고 버튼 클릭(수정 가능)**
 
-<img width="1108" alt="15" src="https://github.com/junyong1111/objectdetection/assets/79856225/4ee3ce23-b8b6-4847-83b0-15e927ad2840">
+<img width="1108" alt="15" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/2124ac90-af78-42f4-9a30-f294bc7af619">
 
 
 **데이터셋에서 이미지 증폭등 다양한 변환 가능**
 
-<img width="1401" alt="16" src="https://github.com/junyong1111/objectdetection/assets/79856225/5b9017ff-efb7-40fb-b8ea-6ce960d05706">
+<img width="1401" alt="16" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/8d9474ac-e70c-487b-b336-94b3a7d93f2c">
 
 - 이미지 레벨과 바운딩박스 레벨에서 90도 변환 증폭을 적용해봤음
     
-    <img width="829" alt="17" src="https://github.com/junyong1111/objectdetection/assets/79856225/fd47e2d6-58de-4cc1-9536-f8dfd9deb9e3">
+    <img width="829" alt="17" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/e385936c-20bc-426c-b833-ec5bee015afc">
     
 
 **YOLOv5 format 으로 내보내기**
 
-<img width="811" alt="18" src="https://github.com/junyong1111/objectdetection/assets/79856225/af4d6a8d-8095-4f45-89ea-d23212335e2e">
+<img width="811" alt="18" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/4134acde-4200-4cab-acc6-0dacc7943889">
 
-<img width="501" alt="19" src="https://github.com/junyong1111/objectdetection/assets/79856225/7c44e1ae-ae5a-4ff0-aaf6-fe4bf6ee3ea4">
+<img width="501" alt="19" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/73c3d4d3-11c5-47fc-aa38-6158361d4157">
 
 **Colab 환경에서 학습을 해야 하므로 주피터 포맷을 선택하고 해당 코드 복사**
 
-<img width="499" alt="20" src="https://github.com/junyong1111/objectdetection/assets/79856225/cb0650c1-bd63-4f09-be19-2c428d74a35d">
-
+<img width="499" alt="20" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/9a54eee5-6089-4599-8b29-cead80558944">
 
 ### Step2. Colab에서 커스텀 데이터 학습
 
@@ -136,6 +134,7 @@ trainer = Trainer(experiment_name='Pokémon_yolonas_run', ckpt_root_dir=CHECKPOI
 
 - roboflow에서 복사해뒀던 코드를 붙여넣기
 
+<img width="497" alt="21" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/fb86c031-ba41-443a-9611-456f67ebaf5a">
 
 
 ```python
@@ -149,10 +148,7 @@ dataset = project.version(1).download("yolov5")
 
 위 코드를 실행하면 로컬에 해당 데이터셋 폴더가 생성 된다 해당 폴더 경로 복사
 
-<img width="525" alt="21" src="https://github.com/junyong1111/objectdetection/assets/79856225/338fdb64-83b8-4686-b4db-94c1c8524e33">
-
-
-
+<img width="525" alt="22" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/d09c6922-c0a4-4cf8-a4b8-df8806498034">
 
 **Step4. 디렉토리로 데이터셋 로드**
 
@@ -235,8 +231,7 @@ train_data.dataset.dataset_params['transforms'][1]['DetectionRandomAffine']['deg
 train_data.dataset.plot()
 ```
 
-![22](https://github.com/junyong1111/objectdetection/assets/79856225/f26e88d7-8770-4008-a220-221e8d983c0d)
-
+![23](https://github.com/junyong1111/YOLO_NAS/assets/79856225/83168594-7fd4-424b-8607-c274eb480a33)
 
 **Step8. 모델 인스턴스화**
 
@@ -342,6 +337,11 @@ trainer.test(model=best_model,
 
 ```python
 #-- 테스트 동영상 다운로드
+import locale
+def getpreferredencoding(do_setlocale = True):
+    return "UTF-8"
+locale.getpreferredencoding = getpreferredencoding
+
 !gdown "https://drive.google.com/uc?id=1HsCBy8HU0Rqs-nb_mScRXVmLwrY1G3UQ"
 ```
 
@@ -349,7 +349,8 @@ trainer.test(model=best_model,
 input_video_path = f"/content/pokemon.mp4"
 output_video_path = "detections.mp4"
 
-best_model.to(device).predict(input_video_path).save(output_video_path)
+best_model.to(device)
+best_model.predict(input_video_path, conf = 0.4).save(output_video_path)
 ```
 
 ```python
@@ -375,7 +376,12 @@ HTML("""
 """ % data_url)
 ```
 
-<img width="605" alt="23" src="https://github.com/junyong1111/objectdetection/assets/79856225/5e53c265-6025-4d92-bb8b-dbcd8ccb997c">
-![22](https://github.com/junyong1111/objectdetection/assets/79856225/039f9c5a-dcce-4693-864f-8133bf1ab9ef)
+<img width="605" alt="24" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/73d61c11-62d5-4da4-b15f-20957169f989">
 
 small 모델과 적은 학습으로 인해 높은 결과는 나오지는 않는다. 파라메터 수정 후 테스트 해보면 좋을듯
+
+### Large + 100번 반복 후 84퍼 정확도 모델 결과
+
+확실하게 이전 모델보다는 잘 인식한다. 더 많은 데이터셋과 파라메터 수정을 하면 좋은 결과 가능할듯
+
+<img width="626" alt="25" src="https://github.com/junyong1111/YOLO_NAS/assets/79856225/0a1db4a9-ed42-4ad8-b7e5-98fb1b6027bf">

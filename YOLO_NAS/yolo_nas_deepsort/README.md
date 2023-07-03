@@ -11,37 +11,9 @@ SORT 알고리즘은 또한 객체의 속도와 크기를 추정하여 추적의
 ### Step0. 필요 라이브러리 다운로드
 
 ```bash
-#-- requirments.txt
-# base -------------------------------------------------------------------------
-torch>=1.7.0
-torchvision>=0.8.1
-numpy==1.23.1           # otherwise issues with track eval
-loguru>=0.7.0
-opencv-python>=4.6.0
-PyYAML>=5.3.1           # read tracker configs
-pandas>=1.1.4           # export matrix
-gdown>=4.7.1            # google drive model download
-GitPython>=3.1.0        # track eval cloning
-
-# tracker-specific packages ----------------------------------------------------
-
-filterpy>=1.4.5         # OCSORT & DeepOCSORT
-
-# Export ----------------------------------------------------------------------
-
-# onnx>=1.12.0          # ONNX export
-# onnxsim>=0.4.1        # ONNX simplifier
-# nvidia-pyindex        # TensorRT export
-# nvidia-tensorrt       # TensorRT export
-# openvino-dev>=2022.3  # OpenVINO export
-# onnx2tf>=1.10.0       # TFLite export
-
-# Hyperparam search -----------------------------------------------------------
-
-# optuna                # genetic algo
-# plotly                # hyper param importance and pareto front plots
-# kaleido
-# joblib
+#-- requirements.txt
+super-gradients==3.1.1
+opencv-python
 ```
 
 ### Step1. deepsort 폴더 복사 후 같은 작업폴더에 붙여넣기
@@ -113,79 +85,82 @@ filterpy>=1.4.5         # OCSORT & DeepOCSORT
 - **반복문을 돌면서 동영상에서 people counting**
     
     ```python
-    #-- deep sort start
-    while cap.isOpened():
-        ret, frame = cap.read()
-        
-        if ret:
-            frame = cv2.resize(frame, (1200, 720))
-            og_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame = og_frame.copy()
-            
-            with torch.no_grad():
-                
-                detection_pred = list(model.predict(frame, conf=conf_treshold)._images_prediction_lst)
-                bboxes_xyxy = detection_pred[0].prediction.bboxes_xyxy.tolist()
-                confidence = detection_pred[0].prediction.confidence.tolist()
-                labels = [label for label in detection_pred[0].prediction.labels.tolist() if label == 0]
-                class_names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light']
-                labels = [int(label) for label in labels]
-                class_name = list(set([class_names[index] for index in labels]))
-                bboxes_xywh = []
-                for bbox in bboxes_xyxy:
-                    x1, y1, x2, y2 = bbox
-                    w = x2 - x1
-                    h = y2 - y1
-                    bbox_xywh = [x1, y1, w, h]
-                    bboxes_xywh.append(bbox_xywh)
-                bboxes_xywh = np.array(bboxes_xywh)
-                tracks = tracker.update(bboxes_xywh, confidence, og_frame)
-                
-                for track in tracker.tracker.tracks:
-                    track_id = track.track_id
-                    hits = track.hits
-                    x1, y1, x2, y2 = track.to_tlbr()
-                    w = x2 - x1
-                    h = y2 - y1
-                    
-                    shift_percent = 0.50
-                    y_shift = int(h * shift_percent)
-                    x_shift = int(w * shift_percent)
-                    y1 += y_shift
-                    y2 += y_shift
-                    x1 += x_shift
-                    x2 += x_shift
-                    
-                    bbox_xywh = (x1, y1, w, h)
-                    color = (0, 255, 0)
-                    cv2.rectangle(og_frame, (int(x1), int(y1)), (int(x1 + w), int(y1 +h)), color, 2)
-                    
-                    text_color = (0, 0, 0)
-                    cv2.putText(og_frame, f"{class_name}-{track_id}", (int(x1) + 10, int(y1) - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color)
-                    
-                    text_color = (0, 0, 0)
-                current_time = time.perf_counter()
-                elapsed = (current_time - start_time)
-                counter += 1
-                if elapsed > 1:
-                    fps = counter / elapsed 
-                    counter = 0
-                    start_time = current_time
-                cv2.putText(og_frame,
-                            f"FPS: {np.round(fps, 2)}",
-                            (10, int(h) - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            1,
-                            (255, 255, 255),
-                            2,
-                            cv2.LINE_AA)
-                frames.append(og_frame)
-                # out.write(cv2.cvtColor(og_frame, cv2.COLOR_RGB2BGR))
-                out.write(og_frame)
+    while True:
+        ret, frame = cap.read()  # 비디오 프레임 읽기
     
-                cv2.imshow("Video", og_frame)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+        count += 1  # 프레임 카운트 증가
+    
+        if ret:
+            detections = np.empty((0, 5))
+    
+            # 모델을 사용하여 객체 검출 및 추적 수행
+            result = list(model.predict(frame, conf=0.35))[0]
+            bbox_xyxys = result.prediction.bboxes_xyxy.tolist()  # 객체의 경계상자 좌표
+            confidences = result.prediction.confidence  # 객체의 신뢰도
+            labels = result.prediction.labels.tolist()  # 객체의 레이블
+    
+            for (bbox_xyxy, confidence, cls) in zip(bbox_xyxys, confidences, labels):
+                bbox = np.array(bbox_xyxy)
+                x1, y1, x2, y2 = bbox[0], bbox[1], bbox[2], bbox[3]
+                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                classname = int(cls)
+                class_name = classNames[classname]
+                conf = math.ceil((confidence*100))/100
+    
+                if class_name == "person" and conf > 0.3:
+                    currentarray = np.array([x1, y1, x2, y2, conf])
+                    detections = np.vstack((detections, currentarray))
+    
+            resultsTracker = tracker.update(detections)  # 객체 추적 업데이트
+    
+            # 경계선 그리기
+            cv2.line(frame, (limitup[0], limitup[1]), (limitup[2], limitup[3]), (255,0,0), 3)  # 상한선
+            cv2.line(frame, (limitdown[0], limitdown[1]), (limitdown[2], limitdown[3]), (255,0,0), 3)  # 하한선
+    
+            for result in resultsTracker:
+                x1, y1, x2, y2, id = result
+                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+    
+                # 객체를 사각형으로 표시
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 144, 30), 3)
+    
+                cx, cy = int((x1+x2)/2), int((y1+y2)/2)
+                cv2.circle(frame, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
+    
+                label = f'{int(id)}'
+                t_size = cv2.getTextSize(label, 0, fontScale=1, thickness=2)[0]
+                c2 = x1 + t_size[0], y1 - t_size[1] - 3
+    
+                # 객체 ID와 함께 사각형 위에 텍스트 표시
+                cv2.rectangle(frame, (x1, y1), c2, [255, 0, 255], -1, cv2.LINE_AA)
+                cv2.putText(frame, label, (x1, y1-2), 0, 1, [255, 255, 255], thickness=1, lineType=cv2.LINE_AA)
+    
+                # 상한선과 하한선을 통과한 객체 수 계산 및 표시
+                if limitup[0] < cx < limitup[2] and limitup[1] - 15 < cy < limitup[3] + 15:
+                    if totalCountUp.count(id) == 0:
+                        totalCountUp.append(id)
+                        cv2.line(frame, (limitup[0], limitup[1]), (limitup[2], limitup[3]), (0, 255, 0), 3)
+    
+                if limitdown[0] < cx < limitdown[2] and limitdown[1] - 15 < cy < limitdown[3] + 15:
+                    if totalCountDown.count(id) == 0:
+                        totalCountDown.append(id)
+                        cv2.line(frame, (limitdown[0], limitdown[1]), (limitdown[2], limitdown[3]), (0, 255, 0), 3)
+    
+            # 상단 영역에 인원 수 표시
+            cv2.rectangle(frame, (100, 65), (441, 97), [255, 0, 255], -1, cv2.LINE_AA)
+            cv2.putText(frame, str("Person Entering") + ":" + str(len(totalCountUp)), (141, 91), 0, 1, [255, 255, 255], thickness=2, lineType=cv2.LINE_AA)
+    
+            # 하단 영역에 인원 수 표시
+            cv2.rectangle(frame, (710, 65), (1100, 97), [255, 0, 255], -1, cv2.LINE_AA)
+            cv2.putText(frame, str("Person Leaving") + ":" + str(len(totalCountDown)), (741, 91), 0, 1, [255, 255, 255], thickness=2, lineType=cv2.LINE_AA)
+    
+            resize_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+            out.write(frame)
+    
+            cv2.imshow("Frame", frame)
+    
+            if cv2.waitKey(1) & 0xFF == ord('1'):  # '1' 키를 누르면 반복문 종료
+                break
         else:
             break
     ```

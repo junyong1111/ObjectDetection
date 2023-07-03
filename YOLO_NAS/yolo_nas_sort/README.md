@@ -519,4 +519,4 @@ if __name__ == '__main__':
     
 - Output 비디오 확인
     
-    ![Untitled](https://github.com/junyong1111/ObjectDetection/assets/79856225/6b1bf0aa-870b-445d-9677-0565b8d3aeb2)
+    ![Untitled](https://github.com/junyong1111/ObjectDetection/assets/79856225/076305f9-7a1d-4948-97aa-247df1990604)

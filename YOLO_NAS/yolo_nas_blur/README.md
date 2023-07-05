@@ -1,51 +1,3 @@
-### 목표 : YOLO_NAS를 이용하여 people blur 처리
-
-## Blur Project
-
-### Step0. 필요 라이브러리 다운로드
-
-```bash
-#-- requirements.txt
-super-gradients==3.1.1
-opencv-python
-```
-
-### Step1. 필요 라이브러리 Import
-
-```python
-import cv2
-import torch
-from super_gradients.training import models
-import numpy as np
-import math
-```
-
-### Step2. people_blur.py 코드 작성
-
-**기본 설정 코드 작성(카메라, GPU, 모델)**
-
-```python
-#-- 카메라 설정
-cap = cv2.VideoCapture("비디오 경로")
-frame_width = int(cap.get(3))
-frame_height = int(cap.get(4))
-out = cv2.VideoWriter('Output.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10, (frame_width, frame_height))
-
-#-- GPU 설정
-device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
-
-#-- 모델 설정
-model = models.get('yolo_nas_s', pretrained_weights="coco").to(device)
-
-count = 0
-classNames = ["person"]
-
-```
-
-**객체 탐지 후 블러 처리 코드 작성**
-
-- 기존 객체 탐지 코드와 똑같지만 인식된 객체의 좌표에 해당하는 블러처리 코드만 추가
-
 ```python
 while True:
     ret, frame = cap.read()
@@ -68,15 +20,13 @@ while True:
             c2 = x1 + t_size[0], y1 - t_size[1] -3
             cv2.rectangle(frame, (x1, y1), c2, [255,144, 30], -1, cv2.LINE_AA)
             cv2.putText(frame, label, (x1, y1-2), 0, 1, [255, 255, 255], thickness=1, lineType = cv2.LINE_AA)
-						#-- 인식된 객체 블러 처리 하는 코드
             frame_area = frame[y1:y2, x1:x2]
-            blur = cv2.blur(frame_area, (20,20)
-            frame[int(y1):int(y2), int(x1): int(x2)]=blur
-						#-- 인식된 객체 블러 처리 하는 코드
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
-        resize_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+            if frame_area.size != 0:  # 형상의 너비 또는 높이가 0인지 확인
+                blur = cv2.blur(frame_area, (20, 20))
+                frame[int(y1):int(y2), int(x1):int(x2)] = blur
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
         out.write(frame)
-        cv2.imshow("Frame", resize_frame)
+        # cv2.imshow("Frame", resize_frame)
         if cv2.waitKey(1) & 0xFF == ord('1'):
             break
     else:

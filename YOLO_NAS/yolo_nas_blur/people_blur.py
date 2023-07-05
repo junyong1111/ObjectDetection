@@ -5,7 +5,7 @@ import numpy as np
 import math
 
 #-- 카메라 설정
-cap = cv2.VideoCapture("people.mp4")
+cap = cv2.VideoCapture("/content/myDrive/MyDrive/Summer_project/test_data/people.mp4")
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
 out = cv2.VideoWriter('Output.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10, (frame_width, frame_height))
@@ -14,10 +14,20 @@ out = cv2.VideoWriter('Output.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
 #-- 모델 설정
-model = models.get('yolo_nas_s', pretrained_weights="coco").to(device)
+model = models.get('yolo_nas_m', pretrained_weights="coco").to(device)
 
 count = 0
-classNames = ["person"]
+classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
+              "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
+              "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
+              "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat",
+              "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup",
+              "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli",
+              "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
+              "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
+              "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
+              "teddy bear", "hair drier", "toothbrush"
+              ]
 
 
 while True:
@@ -41,15 +51,13 @@ while True:
             c2 = x1 + t_size[0], y1 - t_size[1] -3
             cv2.rectangle(frame, (x1, y1), c2, [255,144, 30], -1, cv2.LINE_AA)
             cv2.putText(frame, label, (x1, y1-2), 0, 1, [255, 255, 255], thickness=1, lineType = cv2.LINE_AA)
-						#-- 인식된 객체 블러 처리 하는 코드
             frame_area = frame[y1:y2, x1:x2]
-            blur = cv2.blur(frame_area, (20,20))
-            frame[int(y1):int(y2), int(x1): int(x2)]=blur
-						#-- 인식된 객체 블러 처리 하는 코드
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
-        resize_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+            if frame_area.size != 0:  # 형상의 너비 또는 높이가 0인지 확인
+                blur = cv2.blur(frame_area, (20, 20))
+                frame[int(y1):int(y2), int(x1):int(x2)] = blur
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
         out.write(frame)
-        cv2.imshow("Frame", resize_frame)
+        # cv2.imshow("Frame", resize_frame)
         if cv2.waitKey(1) & 0xFF == ord('1'):
             break
     else:
